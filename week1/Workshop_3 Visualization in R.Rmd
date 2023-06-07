@@ -1,0 +1,107 @@
+---
+title: "Workshop3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Load libraries}
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(raster)
+library(plotrix)
+```
+
+```{r read in data}
+#FAO data
+#uala data
+#kalo data
+#papaya data
+
+#setwd("\\Users\\Candace Edwards\\Desktop\\Data_Ag\\week1")
+
+dat<-read.csv("Rice_yield_FAO.csv")
+####what are the column headings
+names(dat) #names of columns
+str(dat) #what type of variable is each column, numeric, factor, integer 
+dim(dat) #what are the dimensions of the dataset
+```
+
+
+```{r}
+sum_dat <- dat %>%
+  group_by(Country) %>%
+  summarise(
+    avg = mean(Yield_tonnes_per_ha),
+    min = min(Yield_tonnes_per_ha),
+    max = max(Yield_tonnes_per_ha),
+    stan_dev = sd(Yield_tonnes_per_ha),
+    coefficient_var = cv(Yield_tonnes_per_ha),
+    stan_err = std.error(Yield_tonnes_per_ha))
+  
+```
+
+```{r plot data}
+
+ggplot(sum_dat, aes(x = Country, y = avg, colour = "blue"))+
+  geom_point()+
+  theme_bw()
+
+```
+```{r}
+ggplot(sum_dat, aes(x=Country, y= "")) +
+  geom_boxplot()+
+  theme_bw()
+
+```
+```{r}
+ggplot(sum_dat, aes(x=Country
+                    )) + geom_bar(fill='darkgoldenrod2') +
+  theme(panel.background = element_rect(fill = 'steelblue'),
+  panel.grid.major = element_line(colour = "firebrick", size=3),
+  panel.grid.minor = element_line(colour = "blue", size=1))
+```
+
+```{r}
+boxplot(avg ~ "", data = sum_dat, main = "Average Yield Boxplot")
+
+```
+```{r}
+#facet_wrap -- makes a series of grapshs by factor
+
+
+
+#density plot
+# Change line color and fill color
+ggplot(dat, aes(x=Yield_tonnes_per_ha))+
+  geom_density(aes(fill=factor(Country)), alpha = 0.8) +
+  labs(title = "Density Plot",
+       subtitle="Distribution of Rice Yields fro Countries",
+       caption = "Source: Rice",
+       x = "yields (t/ha)",
+       fill = "# countries")
+
+```
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
